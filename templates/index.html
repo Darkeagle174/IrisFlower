@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iris Flower Classification</title>
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+    }
+
+    .container {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    label {
+        margin-top: 10px;
+    }
+
+    input {
+        margin-top: 5px;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    button {
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    #result {
+        margin-top: 20px;
+        font-size: 18px;
+    }
+</style>
+
+<body>
+    <div class="container">
+        <h1>Iris Flower Prediction</h1>
+        <form id="prediction-form">
+            <label for="sepal_length">Sepal Length ({{ feature_ranges[0][0] }} - {{ feature_ranges[0][1] }}):</label>
+            <input type="number" id="sepal_length" step="0.01" min="{{ feature_ranges[0][0] }}"
+                max="{{ feature_ranges[0][1] }}" required><br>
+
+            <label for="sepal_width">Sepal Width ({{ feature_ranges[1][0] }} - {{ feature_ranges[1][1] }}):</label>
+            <input type="number" id="sepal_width" step="0.01" min="{{ feature_ranges[1][0] }}"
+                max="{{ feature_ranges[1][1] }}" required><br>
+
+            <label for="petal_length">Petal Length ({{ feature_ranges[2][0] }} - {{ feature_ranges[2][1] }}):</label>
+            <input type="number" id="petal_length" step="0.01" min="{{ feature_ranges[2][0] }}"
+                max="{{ feature_ranges[2][1] }}" required><br>
+
+            <label for="petal_width">Petal Width ({{ feature_ranges[3][0] }} - {{ feature_ranges[3][1] }}):</label>
+            <input type="number" id="petal_width" step="0.01" min="{{ feature_ranges[3][0] }}"
+                max="{{ feature_ranges[3][1] }}" required><br>
+
+            <button type="submit">Predict</button>
+        </form>
+        <div id="result"></div>
+    </div>
+    <script>
+        document.getElementById('prediction-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const sepal_length = parseFloat(document.getElementById('sepal_length').value);
+            const sepal_width = parseFloat(document.getElementById('sepal_width').value);
+            const petal_length = parseFloat(document.getElementById('petal_length').value);
+            const petal_width = parseFloat(document.getElementById('petal_width').value);
+
+            fetch('http://127.0.0.1:5000/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    sepal_length: sepal_length,
+                    sepal_width: sepal_width,
+                    petal_length: petal_length,
+                    petal_width: petal_width
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('result').innerText = `Predicted Class: ${data.prediction}`;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+</body>
+
+</html>
