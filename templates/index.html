@@ -12,7 +12,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 100vh;
+        height: 100%;
         background-color: #f0f0f0;
     }
 
@@ -82,6 +82,7 @@
             <button type="submit">Predict</button>
         </form>
         <div id="result"></div>
+        <img id="flower-image" src="" alt="Flower Image" style="display: none; margin-top: 20px;">
     </div>
     <script>
         document.getElementById('prediction-form').addEventListener('submit', function (e) {
@@ -107,6 +108,9 @@
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('result').innerText = `Predicted Class: ${data.prediction}`;
+                    const flowerImage = document.getElementById('flower-image');
+                    flowerImage.src = data.image_url;
+                    flowerImage.style.display = 'block';
                 })
                 .catch(error => {
                     console.error('Error:', error);
